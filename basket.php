@@ -1,7 +1,7 @@
-
 #!/usr/bin/env php
 
 <?php
+declare(strict_types = 1);
 
 const OPERATION_EXIT = 0;
 const OPERATION_ADD = 1;
@@ -17,44 +17,54 @@ $operations = [
 
 $items = [];
 
+$functions = [
+    FUNCTION_COUNT => FUNCTION_COUNT . '. Функция.',
+    FUNCTION_ADD => FUNCTION_ADD . '. Функция добавления товара в список покупок.',
+    FUNCTION_DELETE => FUNCTION_DELETE . '. Функция удаления товара из списка покупок.',
+    FUNCTION_PRINT => FUNCTIONN_PRINT . '. Функция отображения списка покупок.',
+];
 
 do {
     system('clear');
 //    system('cls'); // windows
+    FUNCTION_COUNT($items, $operations): array
+    {
+        do {
+            if (count($items)) {
+                echo 'Ваш список покупок: ' . PHP_EOL;
+                echo implode("\n", $items) . "\n";
+            } else {
+                echo 'Ваш список покупок пуст.' . PHP_EOL;
+            }
 
-    do {
-        if (count($items)) {
-            echo 'Ваш список покупок: ' . PHP_EOL;
-            echo implode("\n", $items) . "\n";
-        } else {
-            echo 'Ваш список покупок пуст.' . PHP_EOL;
-        }
 
+            echo 'Выберите операцию для выполнения: ' . PHP_EOL;
+            // Проверить, есть ли товары в списке? Если нет, то не отображать пункт про удаление товаров
+            echo implode(PHP_EOL, $operations) . PHP_EOL . '> ';
+            $operationNumber = trim(fgets(STDIN));
 
-        echo 'Выберите операцию для выполнения: ' . PHP_EOL;
-        // Проверить, есть ли товары в списке? Если нет, то не отображать пункт про удаление товаров
-        echo implode(PHP_EOL, $operations) . PHP_EOL . '> ';
-        $operationNumber = trim(fgets(STDIN));
+            if (!array_key_exists($operationNumber, $operations)) {
+                system('clear');
 
-        if (!array_key_exists($operationNumber, $operations)) {
-            system('clear');
+                echo '!!! Неизвестный номер операции, повторите попытку.' . PHP_EOL;
+            }
 
-            echo '!!! Неизвестный номер операции, повторите попытку.' . PHP_EOL;
-        }
+        } while (!array_key_exists($operationNumber, $operations));
 
-    } while (!array_key_exists($operationNumber, $operations));
-
-    echo 'Выбрана операция: '  . $operations[$operationNumber] . PHP_EOL;
-
+        echo 'Выбрана операция: ' . $operations[$operationNumber] . PHP_EOL;
+    }
     switch ($operationNumber) {
         case OPERATION_ADD:
-            echo "Введение название товара для добавления в список: \n> ";
-            $itemName = trim(fgets(STDIN));
-            $items[] = $itemName;
+            FUNCTION_ADD (int $items) : int {
+                echo "Введение название товара для добавления в список: \n> ";
+                $itemName = trim(fgets(STDIN));
+                $items[] = $itemName;
+            }
             break;
 
         case OPERATION_DELETE:
             // Проверить, есть ли товары в списке? Если нет, то сказать об этом и попросить ввести другую операцию
+            FUNCTION_DELETE (int $items) : int {
             echo 'Текущий список покупок:' . PHP_EOL;
             echo 'Список покупок: ' . PHP_EOL;
             echo implode("\n", $items) . "\n";
@@ -67,17 +77,19 @@ do {
                     unset($items[$key]);
                 }
             }
+        }
             break;
 
         case OPERATION_PRINT:
+            FUNCTION_PRINT(int $items): int {
             echo 'Ваш список покупок: ' . PHP_EOL;
             echo implode(PHP_EOL, $items) . PHP_EOL;
-            echo 'Всего ' . count($items) . ' позиций. '. PHP_EOL;
+            echo 'Всего ' . count($items) . ' позиций. ' . PHP_EOL;
             echo 'Нажмите enter для продолжения';
             fgets(STDIN);
+        }
             break;
     }
-
     echo "\n ----- \n";
 } while ($operationNumber > 0);
 
